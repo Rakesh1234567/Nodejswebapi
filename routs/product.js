@@ -28,18 +28,17 @@ router.get("/",(req,resp,next)=>{
 
 //add new product
 router.post("/",(req,resp,next)=>{
-    const eight={
+    const temproduct={
         "name":req.body.name, 
         "price":req.body.price
     }
-     const yara=eight
-    product.set(eight)
-     const shiru=product.size
+     const product1=temproduct
+    product.set(product1)
+     const size=product.size
     
     resp.status(201).json({
-        mess:"handling post request",
-        shiru,
-        yara
+        size,
+        product1
     });
 })
 

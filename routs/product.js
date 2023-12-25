@@ -1,26 +1,29 @@
 const express=require("express")
 const router=express.Router();
 const fs=require("fs");
-const { map } = require("../app");
+const {  } = require("../app");
+const { json } = require("body-parser");
 
-const product = new Map([
-    [500,"bottle"],
-    [300,"pen" ],
-    [ 200,"notebook"]
-  ]);
-  
-product.set(90,'pencil')
+class product {
+    constructor(id ,name){
+        this.id=id,
+        this.name=name
+    }
+}
 
-let a='';
+const product1=new product(101,"pen")
+const product2=new product(102,"pencil")
+const product3=new product(103,"notebook")
+const product4=new product(104,"book")
+const product5=new product(105,"compas box")
 
-//get all product
-product.forEach (function(value, key) {
-    a +=  value+"," +" "
-  })
+const product_Array=[product1,product2,product3, product4, product5];
+
+
 router.get("/",(req,resp,next)=>{
 
     resp.status(200).json({
-       a
+       product_Array
 
     });
 });
@@ -29,16 +32,14 @@ router.get("/",(req,resp,next)=>{
 //add new product
 router.post("/",(req,resp,next)=>{
     const temproduct={
-        "name":req.body.name, 
-        "price":req.body.price
+        "id":req.body.id, 
+        "name":req.body.name
     }
-     const product1=temproduct
-    product.set(product1)
-     const size=product.size
+   product_Array.push(temproduct)
     
+   const addedproduct=temproduct
     resp.status(201).json({
-        size,
-        product1
+        temproduct  
     });
 })
 
@@ -46,14 +47,14 @@ router.post("/",(req,resp,next)=>{
 //get product by there id 
 router.get("/:productId",(req,resp,next)=>{
     const id=req.params.productId
-     let txt=""
+     let txt=" "
      let speical=" "
-     product.forEach(function(value,key){
-        if(id==key){
-            txt +=key
-            speical+=key+" "+value
+     for(let i=0;i<product_Array.length;i++){
+        if(id==product_Array[i].id){
+            txt=id,
+            speical +=product_Array[i].id+" "+product_Array[i].name
         }
-     })
+     }
     if(id==txt){
         resp.status(200).json({
             speical
@@ -68,60 +69,41 @@ router.get("/:productId",(req,resp,next)=>{
 
 //delete product by id
 router.delete("/:productId",(req,resp,next)=>{
-    const id=req.params.productId
-     
-    product.forEach(function(value, key){
-        if(id==key){
-            product.delete(key)
+    let id=req.params.productId
 
-            let a='';
-            product.forEach (function(value, key) {
-                a += key + ' = ' + value 
-              })
-            let size=product.size;
+           const newarray=product_Array.filter((val)=>{return val.id !=id})
             resp.status(200).json({
-                done:"you deleted",
-                size,
-                a
+               newarray
             })
-        }
-     })
+        
+     }
 
-     if(id){
-        resp.status(200).json({
-            done:"you deleted"
-        })
-    }else{
-        resp.status(200).json({
-            mess:"somethng went wrong"
-        })
-    }
+    
 
-
-})
+)
 
 
 
 //update product by id
 router.patch("/:productId",(req,resp,next)=>{
     const id=req.params.productId
-    const eight={
-        "price":req.body.price, 
+    const body={
+        "id":req.body.id,
+        "name":req.body.name
     }
-  const kalu=eight
-    product.forEach(function(value,key){
-        if(id==key){
-            product.set(id,"kalu")
-            let a='';
-            product.forEach (function(value, key) {
-                a += key + ' = ' + value 
-              })
-            resp.status(200).json({
-                done:"you updated",
-                a
-            })
+
+    for(let i=0;i<product_Array.length;i++){
+        if(id==product_Array[i].id){
+             product_Array[i].name=body.name
         }
-    })
+    }
+
+
+            resp.status(200).json({
+               product_Array
+            })
+        
+    
 
     resp.status(200).json({
         mess:"text updates",
